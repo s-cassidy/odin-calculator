@@ -37,6 +37,12 @@ function processOpKey(event) {
 
 function operate() {
   let rightOperand = parseBuffer();
+  if (operation === "divide" && rightOperand === 0) {
+    renderDisplay("Can't divide by zero, dumb-dumb");
+    operation = null;
+    buffer = [];
+    return;
+  }
   answer = operations[operation](operand, rightOperand);
   renderDisplay();
   operand = null;
@@ -45,7 +51,11 @@ function operate() {
 }
 
 
-function renderDisplay() {
+function renderDisplay(optionalText) {
+  if (optionalText) {
+    display.textContent = optionalText;
+    return;
+  }
   if (answer) {
     display.textContent = answer;
     return;
