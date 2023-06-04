@@ -5,6 +5,19 @@ background-color: black;
   font-family: monospace;
 }
 
+body {
+display: flex;
+  justify-content: center;
+  margin: 2px;
+}
+
+#heading {
+  font-style: italic;
+  font-size: 30px;
+  text-align: center;
+  margin: 3px;
+}
+
 .button {
   box-sizing: border-box;
   display: flex;
@@ -40,6 +53,7 @@ border: 2px solid white;
 display: flex;
   flex-direction: column;
   width: 240px;
+  gap: 3px;
 }
 
 .row {
