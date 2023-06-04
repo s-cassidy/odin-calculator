@@ -15,10 +15,14 @@ const digitKeys = document.querySelectorAll(".numeric");
 const opKeys = document.querySelectorAll(".op");
 const display = document.querySelector("#display");
 const equals = document.querySelector("#equals");
+const plusminus = document.querySelector("#pm");
+const DISPLAY_SIZE = 8;
 
 function processDigitKey(event) {
   answer = null;
-  buffer.push(event.target.id);
+  if (buffer.length < DISPLAY_SIZE) {
+    buffer.push(event.target.id);
+  }
   renderDisplay();
 }
 
@@ -35,19 +39,36 @@ function processOpKey(event) {
   buffer = []
 }
 
+
 function operate() {
   let rightOperand = parseBuffer();
   if (operation === "divide" && rightOperand === 0) {
-    renderDisplay("Can't divide by zero, dumb-dumb");
+    renderDisplay("");
     operation = null;
     buffer = [];
     return;
   }
-  answer = operations[operation](operand, rightOperand);
-  renderDisplay();
-  operand = null;
+  let evaluation = operations[operation](operand, rightOperand);
+  if (Math.abs(evaluation) >= 10 ** DISPLAY_SIZE) {
+    renderDisplay("Too big!")
+  }
+  else {
+    answer = evaluation;
+    renderDisplay();
+    operand = null;
+  }
   operation = null;
   buffer = [];
+}
+
+function toggleNegative() {
+  if (buffer[0] === "-") {
+    buffer.shift();
+  }
+  else {
+    buffer.unshift("-")
+  }
+  renderDisplay();
 }
 
 
@@ -57,7 +78,12 @@ function renderDisplay(optionalText) {
     return;
   }
   if (answer) {
-    display.textContent = answer;
+    if (Number.isInteger(answer)) {
+      display.textContent = answer;
+    }
+    else {
+      display.textContent = parseFloat(answer.toPrecision(DISPLAY_SIZE - 1));
+    }
     return;
   }
   if (buffer.length > 0) {
@@ -76,3 +102,4 @@ opKeys.forEach((elem) =>
 
 equals.addEventListener("click", operate)
 
+pm.addEventListener("click", toggleNegative)
