@@ -13,8 +13,8 @@ background-color: black;
   border-radius: 50%;
   border: 2px solid white;
   padding:15px;
-  width:50px;
-  height:50px;
+  width:60px;
+  height:60px;
   gap: 4px;
 }
 
@@ -39,7 +39,7 @@ border: 2px solid white;
 #calculator {
 display: flex;
   flex-direction: column;
-  width: 200px;
+  width: 240px;
 }
 
 .row {
