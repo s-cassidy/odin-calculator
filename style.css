@@ -2,6 +2,7 @@
 background-color: black;
   color: white;
   font-size: 24px;
+  font-family: monospace;
 }
 
 .button {
@@ -29,6 +30,9 @@ background-color: darkorange;
 #display {
 border: 2px solid white;
   height: 50px;
+  font-size: 35px; 
+  text-align: end;
+  padding: 4px;
 }
 
 
@@ -46,4 +50,7 @@ display: flex;
 .last-row {
 display: flex;
     justify-content: flex-end;
+}
 
+#clear {
+  font-size: 12px;
