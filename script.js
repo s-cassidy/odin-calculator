@@ -17,6 +17,8 @@ const display = document.querySelector("#display");
 const equals = document.querySelector("#equals");
 const decimalPoint = document.querySelector("#point");
 const plusminus = document.querySelector("#pm");
+const sqrt = document.querySelector("#sqrt");
+const clear = document.querySelector("#clear");
 const DISPLAY_SIZE = 8;
 
 function processDigitKey(event) {
@@ -50,7 +52,10 @@ function resetBuffer() {
 }
 
 function resetAll() {
-
+  resetBuffer();
+  leftOperand = null;
+  answer = null;
+  renderDisplay();
 }
 
 function operate() {
@@ -108,6 +113,7 @@ function renderDisplay(optionalText) {
     display.textContent = buffer.join("");
     return;
   }
+  display.textContent = 0;
 }
 
 function insertDecimal() {
@@ -130,8 +136,10 @@ opKeys.forEach((elem) =>
   elem.addEventListener("click", (e) => processOpKey(e))
 )
 
-equals.addEventListener("click", operate)
+equals.addEventListener("click", operate);
 
-pm.addEventListener("click", toggleNegative)
+pm.addEventListener("click", toggleNegative);
 
-decimalPoint.addEventListener("click", insertDecimal)
+decimalPoint.addEventListener("click", insertDecimal);
+
+clear.addEventListener("click", resetAll);
