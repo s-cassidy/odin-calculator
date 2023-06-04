@@ -40,10 +40,15 @@ function parseBuffer() {
 
 
 function processOpKey(event) {
-  if (leftOperand && operation) {
+  if (leftOperand && operation && buffer.length > 0) {
     operate();
   }
-  leftOperand = answer || parseBuffer();
+  if (buffer.length > 0) {
+    leftOperand = parseBuffer();
+  }
+  else if (answer) {
+    leftOperand = answer;
+  }
   readyNextInput();
   operation = event.target.id;
 }
@@ -66,7 +71,7 @@ function resetAll() {
 
 function operate() {
   if (!operation) {
-    leftOperand = answer || parseBuffer();
+    leftOperand = parseBuffer() || answer;
     readyNextInput();
     return;
   }
