@@ -4,6 +4,7 @@ let buffer = [];
 let operation;
 let leftOperand;
 let answer;
+
 const operations = {
   plus: (a, b) => (a + b),
   minus: (a, b) => (a - b),
@@ -19,7 +20,7 @@ const decimalPoint = document.querySelector("#point");
 const plusminus = document.querySelector("#pm");
 const sqrt = document.querySelector("#sqrt");
 const clear = document.querySelector("#clear");
-const DISPLAY_SIZE = 8;
+const DISPLAY_SIZE = 9;
 
 function processDigitKey(event) {
   answer = null;
@@ -29,6 +30,7 @@ function processDigitKey(event) {
   renderDisplay();
 }
 
+
 function parseBuffer() {
   if (buffer.length === 0) {
     return 0;
@@ -36,52 +38,64 @@ function parseBuffer() {
   return parseInt(buffer.join(""));
 }
 
+
 function processOpKey(event) {
   if (leftOperand && operation) {
-    operate(operation);
+    operate();
   }
   leftOperand = answer || parseBuffer();
-  resetBuffer();
+  readyNextInput();
   operation = event.target.id;
 }
 
-function resetBuffer() {
+
+function readyNextInput() {
   decimalPoint.classList.remove("greyed-out");
   operation = null;
   buffer = [];
 }
 
+
 function resetAll() {
-  resetBuffer();
+  readyNextInput();
   leftOperand = null;
   answer = null;
   renderDisplay();
 }
 
+
 function operate() {
   if (!operation) {
     leftOperand = answer || parseBuffer();
-    resetBuffer();
+    readyNextInput();
     return;
   }
+
   let rightOperand = parseBuffer();
   if (operation === "divide" && rightOperand === 0) {
-    renderDisplay("");
-    resetBuffer();
+    renderDisplay("No can do");
+    readyNextInput();
     return;
   }
-  else {
-    let evaluation = operations[operation](leftOperand, rightOperand);
-    if (Math.abs(evaluation) >= 10 ** DISPLAY_SIZE) {
-      renderDisplay("Too big!")
-    }
-    else {
-      answer = evaluation;
-      renderDisplay();
-      leftOperand = null;
-    }
+
+  let evaluation = operations[operation](leftOperand, rightOperand);
+  if (Math.abs(evaluation) >= 10 ** DISPLAY_SIZE) {
+    renderDisplay("Too big!")
   }
-  resetBuffer();
+  else {
+    answer = evaluation;
+    leftOperand = null;
+    renderDisplay();
+  }
+  readyNextInput();
+}
+
+function sqrtOperation() {
+  let radicand = parseBuffer() || leftOperand || answer;
+  answer = Math.sqrt(radicand);
+  renderDisplay();
+  leftOperand = null;
+  readyNextInput();
 }
 
 function toggleNegative() {
@@ -105,6 +119,7 @@ function renderDisplay(optionalText) {
       display.textContent = answer;
     }
     else {
+      // We need DISPLAY_SIZE - 1 as there will be a decimal point
       display.textContent = parseFloat(answer.toPrecision(DISPLAY_SIZE - 1));
     }
     return;
@@ -137,9 +152,7 @@ opKeys.forEach((elem) =>
 )
 
 equals.addEventListener("click", operate);
-
 pm.addEventListener("click", toggleNegative);
-
 decimalPoint.addEventListener("click", insertDecimal);
-
 clear.addEventListener("click", resetAll);
+sqrt.addEventListener("click", sqrtOperation);
