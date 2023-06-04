@@ -2,7 +2,7 @@
 
 let buffer = [];
 let operation;
-let operand;
+let leftOperand;
 let answer;
 const operations = {
   plus: (a, b) => (a + b),
@@ -15,6 +15,7 @@ const digitKeys = document.querySelectorAll(".numeric");
 const opKeys = document.querySelectorAll(".op");
 const display = document.querySelector("#display");
 const equals = document.querySelector("#equals");
+const decimalPoint = document.querySelector("#point");
 const plusminus = document.querySelector("#pm");
 const DISPLAY_SIZE = 8;
 
@@ -27,38 +28,55 @@ function processDigitKey(event) {
 }
 
 function parseBuffer() {
+  if (buffer.length === 0) {
+    return 0;
+  }
   return parseInt(buffer.join(""));
 }
 
 function processOpKey(event) {
-  if (operand && operation) {
+  if (leftOperand && operation) {
     operate(operation);
   }
+  leftOperand = answer || parseBuffer();
+  resetBuffer();
   operation = event.target.id;
-  operand = answer || parseBuffer();
-  buffer = []
 }
 
+function resetBuffer() {
+  decimalPoint.classList.remove("greyed-out");
+  operation = null;
+  buffer = [];
+}
+
+function resetAll() {
+
+}
 
 function operate() {
+  if (!operation) {
+    leftOperand = answer || parseBuffer();
+    resetBuffer();
+    return;
+  }
   let rightOperand = parseBuffer();
   if (operation === "divide" && rightOperand === 0) {
     renderDisplay("");
-    operation = null;
-    buffer = [];
+    resetBuffer();
     return;
   }
-  let evaluation = operations[operation](operand, rightOperand);
-  if (Math.abs(evaluation) >= 10 ** DISPLAY_SIZE) {
-    renderDisplay("Too big!")
-  }
   else {
-    answer = evaluation;
-    renderDisplay();
-    operand = null;
+    let evaluation = operations[operation](leftOperand, rightOperand);
+    if (Math.abs(evaluation) >= 10 ** DISPLAY_SIZE) {
+      renderDisplay("Too big!")
+    }
+    else {
+      answer = evaluation;
+      renderDisplay();
+      leftOperand = null;
+    }
   }
-  operation = null;
-  buffer = [];
+  resetBuffer();
 }
 
 function toggleNegative() {
@@ -92,6 +110,18 @@ function renderDisplay(optionalText) {
   }
 }
 
+function insertDecimal() {
+  if (buffer.includes(".")) {
+    return;
+  }
+  if (buffer.length === 0) {
+    buffer.push("0");
+  }
+  buffer.push(".");
+  renderDisplay();
+  decimalPoint.classList.add("greyed-out");
+}
+
 digitKeys.forEach((elem) =>
   elem.addEventListener("click", (e) => processDigitKey(e))
 )
@@ -103,3 +133,5 @@ opKeys.forEach((elem) =>
 equals.addEventListener("click", operate)
 
 pm.addEventListener("click", toggleNegative)
+
+decimalPoint.addEventListener("click", insertDecimal)

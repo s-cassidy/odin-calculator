@@ -54,3 +54,8 @@ display: flex;
 
 #clear {
   font-size: 12px;
+}
+
+.greyed-out {
+background-color: lightcoral;
+}
